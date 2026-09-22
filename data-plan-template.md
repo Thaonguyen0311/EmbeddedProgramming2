@@ -1,6 +1,6 @@
 # Data plan — *your project name*
 
-**Team:** name 1, name 2 (, name 3)
+**Team:** Thao Nguyen, Soen Wu
 
 > **One page.** Copy this file into your **team** repository as `data-plan.md`,
 > answer the four questions, and delete these quote blocks as you go.
