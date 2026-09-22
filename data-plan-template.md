@@ -1,6 +1,6 @@
 # Data plan — Wristband Physiological State Detection
 
-**Team:** Thao Nguyen, Soen Wu
+**Team:** Thao Nguyen, Seonmi Wu
 
 ## Sensor
 
