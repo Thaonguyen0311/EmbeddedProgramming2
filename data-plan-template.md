@@ -1,35 +1,140 @@
-# Data plan — Wristband Physiological State Detection
+# Data Plan — Physiological Deception Detection
 
 **Team:** Thao Nguyen, Seonmi Wu
 
-## Sensor
+## Objective
 
-Our finished device will be a wristband using a **heart-rate sensor** and a **skin-conductivity (EDA/GSR) sensor**. We will train the model using the same sensors that will be used in the final wristband.
+The goal of this project is to investigate whether physiological signals can be used to distinguish between **truthful and deceptive responses**.
+
+The system will collect physiological measurements while a participant answers questions or performs tasks under two conditions:
+
+* **Truthful** — the participant provides a truthful answer.
+* **Deceptive** — the participant intentionally provides a false answer.
+
+The collected signals will then be used to train and evaluate a machine-learning model for **truthful vs. deceptive classification**.
+
+> **Note:** The system is intended as an experimental deception-classification system. Physiological responses can also be affected by stress, movement, cognitive effort, and other factors, so the model should not be interpreted as a general-purpose lie detector.
+
+## Sensors
+
+We are considering the following physiological sensors:
+
+1. **PPG** → heart rate / heart-rate variability
+2. **EDA/GSR** → skin conductance and sympathetic arousal
+3. **Respiration sensor** → breathing rate and breathing pattern
+4. **Temperature sensor** → peripheral/skin temperature
+
+### Alternative: Nose-mounted measurement
+
+Instead of placing all sensors on a wristband, some measurements could be collected from the **nose or facial area**, particularly temperature and respiration-related signals.
+
+A nose-mounted or facial sensor could potentially provide:
+
+* **Nose temperature**
+* **Respiration**
+* Other physiological measurements depending on the selected hardware
+
+This approach is relevant because existing deception datasets include measurements such as **nose temperature, heart-rate response, EDA, and respiratory depth**.
 
 ## Classes
 
-The device should distinguish between:
+The system will distinguish between two classes:
 
-* **resting / normal state** — nothing unusual happening
-* **lying down** — the person is lying down and relaxed
-* **active / stressed state** — the person is moving or experiencing increased physiological activity
+| Class         | Description                                              |
+| ------------- | -------------------------------------------------------- |
+| **Truthful**  | The participant provides a truthful response.            |
+| **Deceptive** | The participant intentionally provides a false response. |
 
-Including the resting/normal class is important because the wristband will spend much of its time in this state.
+The target classification is therefore:
 
-## Collection
+```text
+Physiological signals
+        ↓
+PPG + EDA + Respiration + Temperature
+        ↓
+Feature extraction
+        ↓
+Machine-learning model
+        ↓
+┌──────────────┬──────────────┐
+│   Truthful   │  Deceptive   │
+└──────────────┴──────────────┘
+```
 
-Both team members will record data for each class. We will collect multiple recordings per class under different conditions, including different people, sitting/standing positions, movement levels, and recording sessions.
+## Data Collection
+
+Both team members will record data for both classes.
+
+For each participant, we will collect multiple recordings under different questions and recording sessions. Each recording will contain a known ground-truth label indicating whether the response was **truthful or deceptive**.
 
 We will aim for at least **20 recordings per class**, with each recording lasting approximately **30–60 seconds**.
 
-We will keep some recordings from each person and session aside as **test data**. These recordings will not be used during training.
+To reduce overfitting to individual participants, the dataset should include recordings from different people and multiple recording sessions.
 
-## Risk
+Where possible, we will also vary:
 
-The two classes most likely to be confused are **resting / normal state** and **lying down**, because both can produce similar heart-rate and skin-conductivity measurements when the person is relaxed.
+* Questions
+* Recording sessions
+* Response content
+* Body position
+* Normal movement conditions
 
-Another possible confusion is **resting / normal state** and **active / stressed state**, because heart rate and skin conductivity can vary between people and can be affected by factors other than the intended activity.
+## Train / Test Split
 
-## Waiting for
+Some recordings from each participant and session will be kept aside as **test data**.
 
-We are waiting for the heart-rate and skin-conductivity sensors to be available before starting the final data collection.
+These recordings will **not be used during training**.
+
+Ideally, some participants should be completely excluded from the training data and used only for testing. This will help evaluate whether the model can generalize to a person it has not seen during training.
+
+```text
+Participants
+      │
+      ├── Training participants
+      │       └── Truthful + Deceptive
+      │
+      └── Test participants
+              └── Truthful + Deceptive
+```
+
+## Risk and Challenges
+
+The main challenge is that physiological responses are not unique to deception.
+
+For example, a person may experience increased heart rate or skin conductance because of:
+
+* Nervousness
+* Stress
+* Surprise
+* Cognitive effort
+* Movement
+* The difficulty of the question
+
+Therefore, the model may confuse **truthful responses with deceptive responses** when both produce similar physiological reactions.
+
+Another challenge is the variation between individuals. Different people can have very different baseline heart rates, skin conductance levels, respiration patterns, and temperature.
+
+To address this, we will collect data from multiple people and recording sessions and investigate appropriate normalization and feature-extraction methods.
+
+## Existing Dataset
+
+We will also investigate publicly available deception datasets containing explicit **truthful/control and deceptive/test conditions**.
+
+For example, the dataset currently being examined contains physiological features including:
+
+* EDA response
+* Heart-rate response
+* HR deceleration
+* Nose temperature
+* Respiratory depth
+* Pupil response
+
+The dataset contains a `Condition` field with **Control** and **Test** classes.
+
+These existing data can potentially be used to develop and evaluate the classification approach before collecting our own sensor data.
+
+## Waiting For
+
+We are currently waiting for the **PPG and EDA sensors** to become available before starting the final data-collection phase.
+
+After the sensors are available, we will finalize the hardware configuration and determine whether the system will use a **wristband configuration, a nose/facial sensor configuration, or a combination of both**.
