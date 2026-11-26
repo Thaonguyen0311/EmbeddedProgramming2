@@ -10,11 +10,9 @@ Our current prototype has the following configuration:
 
 - **Microcontroller:** ESP32-S3 DevKitC-1
 - **PPG sensor:** Heart Rate 11 Click (OB1203), I²C
-- **GSR sensor:** GSR Click (MCP3201), SPI / ADC
 - **Data output:** 115200 baud serial communication
 - **Firmware output interval:** 20 ms (50 rows per second)
 - **PPG processing window:** 80 samples (approximately 1.6 seconds at the current output interval)
-- **GSR:** 4× oversampling
 
 ## Why ESP32-S3?
 
